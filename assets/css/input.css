@@ -1,0 +1,25 @@
+.acf-field-multisite-related-posts .icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+.acf-field-multisite-related-posts select.inline {
+  width:auto; 
+  display:inline-block; 
+  margin: 0 5px;
+}
+
+.acf-field-multisite-related-posts .filterable {
+  position: relative;
+}
+
+.acf-field-multisite-related-posts .wait {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: none;
+}

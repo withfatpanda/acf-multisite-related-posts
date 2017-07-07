@@ -1,0 +1,14 @@
+{
+    "name": "withfatpanda/acf-multisite-related-posts",
+    "description": "Adds a field to Advanced Custom Fields that allows for loading related posts across sites in a WordPress Multisite installation",
+    "type": "wordpress-plugin",
+    "license": "GPLv2",
+    "version": "0.1.0",
+    "authors": [
+        {
+            "name": "Aaron Collegeman",
+            "email": "aaron@withfatpanda.com"
+        }
+    ],
+    "require": {}
+}
