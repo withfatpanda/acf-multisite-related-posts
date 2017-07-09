@@ -126,11 +126,11 @@ class acf_plugin_multisite_related_posts {
 
     switch_to_blog($site);
 
-    $taxonomies = array_values(get_taxonomies(null, 'objects'));
+    $taxonomies = get_taxonomies(null, 'objects');
 
     $search = $this->get('search');
       
-    $taxonomies = array_filter($taxonomies, function($tax) use ($type, $search) {
+    $taxonomies = array_values(array_filter($taxonomies, function($tax) use ($type, $search) {
       if ($search) {
         if (stripos($tax->label, $search) === false && stripos($tax->name, $search) === false) {
           return false;
@@ -142,7 +142,7 @@ class acf_plugin_multisite_related_posts {
       }
 
       return true;
-    });
+    }));
 
     // XXX: this isn't working:
     usort($taxonomies, function($a, $b) {
@@ -158,11 +158,31 @@ class acf_plugin_multisite_related_posts {
       $this->json(new WP_Error('auth', 'You are not authorized'), 403);
     }
 
+    if (!$taxonomies = $this->get('taxonomies')) {
+      $this->json([]);
+    }
+
     if (!$site = $this->get('site')) {
       $this->json(new \InvalidArgumentException("Argument missing: site"));
     }
 
-    $this->json(get_terms('category'));
+    switch_to_blog($site);
+
+    $terms = get_terms([ 'taxonomy' => $taxonomies ]);
+
+    $search = $this->get('search');
+      
+    $terms = array_values(array_filter($terms, function($term) use ($search) {
+      if ($search) {
+        if (stripos($term->slug, $search) === false && stripos($term->name, $search) === false) {
+          return false;
+        } 
+      }
+
+      return true;
+    }));
+    
+    $this->json($terms);
   }
   
   /*

@@ -150,7 +150,7 @@ class acf_field_multisite_related_posts extends base_acf_field_multisite_related
 		];
 		
 		// echo '<pre>';
-		// 	print_r( $labels );
+		// 	print_r( $fieldValue );
 		// echo '</pre>';
 		
 		if (empty($fieldValue->limit)) {
@@ -163,6 +163,10 @@ class acf_field_multisite_related_posts extends base_acf_field_multisite_related
 
 		if (empty($fieldValue->site)) {
 			$fieldValue->site = $sites[0]->blog_id;
+		}
+
+		if (empty($fieldValue->terms)) {
+			$fieldValue->terms = [];
 		}
 
 		?>
@@ -180,55 +184,8 @@ class acf_field_multisite_related_posts extends base_acf_field_multisite_related
 				to relate to this <b><?php echo $currentPostLabels->singular_name ?></b>.
 			</p>
 
-			<table style="width:100%; border-spacing:0; border:0; margin: 0;">
-				<tbody>
-					<tr>
-						<td width="33%" valign="top">
-							<div data-toggle="taxonomies" class="filterable">
-								<img class="wait" src="<?php echo $this->image('wait.gif') ?>">
-								<input type="search" placeholder="Search Taxonomies...">
-								<select multiple size="8" disabled placeholder="Choose a site"></select>
-							</div>
-						</td>
-						<td width="33%" valign="top">	
-							<div data-toggle="terms" class="filterable">
-								<img class="wait" src="<?php echo $this->image('wait.gif') ?>">
-								<input type="search" placeholder="Search Terms...">
-								<select multiple size="8" disabled placeholder="Choose at least one taxonomy"></select>
-							</div>
-						</td>
-						<td width="33%" valign="top">	
-							<div data-toggle="selected" class="filterable">
-								<input type="text" value="Selected:" readonly style="border-color:transparent; background-color:transparent; box-shadow:none; font-weight:bold;">
-								<select multiple size="8" disabled placeholder="0 terms selected"></select>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-				<tfoot>
-					<td>
-						<button class="button" data-action="clear-taxonomies" disabled>
-							<svg class="icon icon-blocked"><use xlink:href="#icon-blocked"></use></svg>
-							Clear Selection
-						</button>
-					</td>
-					<td>
-						<button class="button" data-action="pick" disabled>
-							<svg class="icon icon-arrow-right"><use xlink:href="#icon-arrow-right"></use></svg>
-							Pick
-						</button>
-					</td>
-					<td>
-						<button class="button" data-action="trash" disabled>
-							<svg class="icon icon-bin"><use xlink:href="#icon-bin"></use></svg>
-							Remove
-						</button>
-					</td>
-				</tfoot>
-			</table>
-
-			<p style="margin-bottom:0; padding-bottom:0;">
-				Display 
+			<p>
+				From these Terms, display
 				<select class="inline" data-toggle="limit">
 					<?php for($i = 1; $i <= 100; $i++) { ?>
 						<option value="<?php echo $i ?>" <?php if ($i == $fieldValue->limit) echo 'selected' ?>>
@@ -248,6 +205,53 @@ class acf_field_multisite_related_posts extends base_acf_field_multisite_related
 					<?php } ?>
 				</select>
 			</p>
+
+			<table style="width:100%; border-spacing:0; border:0; margin: 0;">
+				<tbody>
+					<tr>
+						<td width="33%" valign="top">
+							<div data-toggle="taxonomies" class="filterable" data-no-results="No results found">
+								<img class="wait" src="<?php echo $this->image('wait.gif') ?>">
+								<input type="search" placeholder="Search Taxonomies...">
+								<select multiple size="8" disabled placeholder="Choose a site"></select>
+							</div>
+						</td>
+						<td width="33%" valign="top">	
+							<div data-toggle="terms" class="filterable" data-no-results="No results found">
+								<img class="wait" src="<?php echo $this->image('wait.gif') ?>">
+								<input type="search" placeholder="Search Terms...">
+								<select multiple size="8" disabled placeholder="Choose at least one taxonomy"></select>
+							</div>
+						</td>
+						<td width="33%" valign="top">	
+							<div data-toggle="selected" data-selected="<?php echo esc_attr(json_encode($fieldValue->terms)) ?>" class="filterable" data-no-results="0 terms selected">
+								<input type="text" value="Selected:" readonly style="border-color:transparent; background-color:transparent; box-shadow:none; font-weight:bold;">
+								<select multiple size="8" disabled placeholder="0 terms selected"></select>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<td>
+						<button class="button" data-action="clear-taxonomies" disabled>
+							<svg class="icon icon-blocked"><use xlink:href="#icon-blocked"></use></svg>
+							Clear Selection
+						</button>
+					</td>
+					<td>
+						<button class="button" data-action="pick-terms" disabled>
+							<svg class="icon icon-arrow-right"><use xlink:href="#icon-arrow-right"></use></svg>
+							Pick
+						</button>
+					</td>
+					<td>
+						<button class="button" data-action="remove-terms" disabled>
+							<svg class="icon icon-bin"><use xlink:href="#icon-bin"></use></svg>
+							Remove
+						</button>
+					</td>
+				</tfoot>
+			</table>
 
 			<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 				<defs>
