@@ -205,6 +205,7 @@ class acf_plugin_multisite_related_posts {
     
     
     // include
+    include_once('lib/acf-multisite-related-posts-utility.php');
     include_once('fields/base-acf-multisite-related-posts.php');
     include_once('fields/acf-multisite-related-posts-v' . $version . '.php');
     

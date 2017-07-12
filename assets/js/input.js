@@ -157,6 +157,12 @@
 			}
 		});
 
+		// relation = query conjunction
+		var $relation = $field.find('[data-toggle="relation"]')
+			.on('change', function() {
+				settings.set('relation', $relation.val())
+			});
+
 		// limit = max number of posts to display
 		var $limit = $field.find('[data-toggle="limit"]')
 			.on('change', function() {
@@ -295,10 +301,12 @@
 
 		// init settings from rendered fields
 		settings.set({
+			relation: $relation.val(),
 			limit: $limit.val(),
 			order: $order.val(),
 			type: $type.val(),
-			site: $sites.val()
+			site: $sites.val(),
+			terms: $selected.source.toJSON()
 		});
 	};
 	

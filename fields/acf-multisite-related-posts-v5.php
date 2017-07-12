@@ -10,7 +10,20 @@ if( !class_exists('acf_field_multisite_related_posts') ) :
 
 class acf_field_multisite_related_posts extends base_acf_field_multisite_related_posts {
 	
-	
+	protected $orderOptions = [
+		'date,desc' => 'descending order, by post date',
+		'date,asc' => 'ascending order, by post date',
+		'title,asc' => 'ascending order, by title',
+		'title,desc' => 'descending order, by title',
+		'rand' => 'random order',
+	];
+
+	protected $relationOptions = [
+		'OR' => 'any',
+		'AND' => 'all',
+	];
+
+
 	/*
 	*  __construct
 	*
@@ -139,38 +152,14 @@ class acf_field_multisite_related_posts extends base_acf_field_multisite_related
 
 		$currentPostLabels = get_post_type_labels($post);
 
-		$fieldValue = !empty($field['value']) ? json_decode($field['value']) : new stdClass;
-
-		$orderOptions = [
-			'post_date_gmt,desc' => 'descending order, by post date',
-			'post_date_gmt,asc' => 'ascending order, by post date',
-			'post_title,asc' => 'ascending order, by title',
-			'post_title,desc' => 'descending order, by title',
-			'random' => 'random order',
-		];
+		$fieldValue = $field['value'];
 		
 		// echo '<pre>';
 		// 	print_r( $fieldValue );
 		// echo '</pre>';
-		
-		if (empty($fieldValue->limit)) {
-			$fieldValue->limit = 3;
-		}
-
-		if (empty($fieldValue->order)) {
-			$fieldValue->order = 'post_date_gmt,desc';
-		}
-
-		if (empty($fieldValue->site)) {
-			$fieldValue->site = $sites[0]->blog_id;
-		}
-
-		if (empty($fieldValue->terms)) {
-			$fieldValue->terms = [];
-		}
 
 		?>
-			<input data-toggle="settings" type="hidden" name="<?php echo esc_attr($field['name']) ?>" value="<?php echo esc_attr($field['value']) ?>">
+			<input data-toggle="settings" type="hidden" name="<?php echo esc_attr($field['name']) ?>" value="<?php echo esc_attr(json_encode($fieldValue)) ?>">
 
 			<p>
 				Browse <b>Taxonomies</b> and select <b>Terms</b> from
@@ -185,7 +174,15 @@ class acf_field_multisite_related_posts extends base_acf_field_multisite_related
 			</p>
 
 			<p>
-				From these Terms, display
+				From 
+				<select class="inline" data-toggle="relation">
+					<?php foreach($this->relationOptions as $value => $label) { ?>
+						<option value="<?php echo esc_attr($value) ?>" <?php if ($value == $fieldValue->relation) echo 'selected' ?>>
+							<?php echo esc_html($label) ?>
+						</option>
+					<?php } ?>
+				</select>
+				of these Terms, display
 				<select class="inline" data-toggle="limit">
 					<?php for($i = 1; $i <= 100; $i++) { ?>
 						<option value="<?php echo $i ?>" <?php if ($i == $fieldValue->limit) echo 'selected' ?>>
@@ -198,7 +195,7 @@ class acf_field_multisite_related_posts extends base_acf_field_multisite_related
 				</select>
 				sorted in
 				<select class="inline" data-toggle="order">
-					<?php foreach($orderOptions as $value => $label) { ?>
+					<?php foreach($this->orderOptions as $value => $label) { ?>
 						<option value="<?php echo esc_attr($value) ?>" <?php if ($value === $fieldValue->order) echo 'selected' ?>>
 							<?php echo esc_html($label) ?>
 						</option>
@@ -233,10 +230,12 @@ class acf_field_multisite_related_posts extends base_acf_field_multisite_related
 				</tbody>
 				<tfoot>
 					<td>
+						<!--
 						<button class="button" data-action="clear-taxonomies" disabled>
 							<svg class="icon icon-blocked"><use xlink:href="#icon-blocked"></use></svg>
 							Clear Selection
 						</button>
+						-->
 					</td>
 					<td>
 						<button class="button" data-action="pick-terms" disabled>
@@ -513,15 +512,32 @@ class acf_field_multisite_related_posts extends base_acf_field_multisite_related
 	*  @return	$value
 	*/
 	
-	/*
-	
 	function load_value( $value, $post_id, $field ) {
 		
-		return $value;
+		$value = !empty($value) ? json_decode($value) : new stdClass;
+
+		if (empty($value->relation)) {
+			$value->relation = 'OR';
+		}
+
+		if (empty($value->limit)) {
+			$value->limit = 3;
+		}
+
+		if (empty($value->order)) {
+			$value->order = 'date,desc';
+		}
+
+		if (empty($value->site)) {
+			$value->site = $sites[0]->blog_id;
+		}
+
+		if (empty($value->terms)) {
+			$value->terms = [];
+		}
 		
+		return $value;
 	}
-	
-	*/
 	
 	
 	/*
@@ -566,32 +582,11 @@ class acf_field_multisite_related_posts extends base_acf_field_multisite_related
 	*  @return	$value (mixed) the modified value
 	*/
 		
-	/*
-	
 	function format_value( $value, $post_id, $field ) {
+
+		return $this->utility->format_value($value, $post_id, $field);
 		
-		// bail early if no value
-		if( empty($value) ) {
-		
-			return $value;
-			
-		}
-		
-		
-		// apply setting
-		if( $field['font_size'] > 12 ) { 
-			
-			// format the value
-			// $value = 'something';
-		
-		}
-		
-		
-		// return
-		return $value;
 	}
-	
-	*/
 	
 	
 	/*

@@ -14,7 +14,7 @@ class SampleTest extends WP_UnitTestCase {
 	 * A single example test.
 	 */
 	function test_sample() {
-		// Replace this with some actual testing code.
-		$this->assertTrue( true );
+		include_once(__DIR__.'/../fields/base-acf-multisite-related-posts.php');
+    include_once(__DIR__.'/../fields/acf-multisite-related-posts-v5.php');
 	}
 }
