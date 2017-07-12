@@ -513,7 +513,9 @@ class acf_field_multisite_related_posts extends base_acf_field_multisite_related
 	*/
 	
 	function load_value( $value, $post_id, $field ) {
-		
+
+		$sites = get_sites([ 'number' => 10000 ]);
+
 		$value = !empty($value) ? json_decode($value) : new stdClass;
 
 		if (empty($value->relation)) {
